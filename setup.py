@@ -12,7 +12,7 @@ except ImportError:
     use_setuptools()
     from setuptools import setup
 
-if sys.version_info < (2, 7, 3) or sys.version_info >= (2, 7, 9):
+if sys.version_info < (2, 7, 3) or sys.version_info >= (2, 7, 20):
     raise Exception('ChEMBL software stack requires python 2.7.3 - 2.7.9')
 
 setup(
