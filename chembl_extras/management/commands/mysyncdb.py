@@ -12,7 +12,15 @@ from django.core.management.sql import emit_post_sync_signal
 from django.db import connections, router, transaction, models, DEFAULT_DB_ALIAS
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
+try:
+    # django >= 1.7
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    # django < 1.7
+    from django.db.models import get_model
 
+#---------------
 def custom_sql_for_model(model, style, connection):
     opts = model._meta
     app_dir = os.path.normpath(os.path.join(os.path.dirname(models.get_app(model._meta.app_label).__file__), 'sql'))
@@ -99,7 +107,7 @@ class Command(NoArgsCommand):
         # Build the manifest of apps and models that are to be synchronized
         all_models = [
             (app.__name__.split('.')[-2],
-                [m for m in models.get_models(app, include_auto_created=True)
+                [m for m in get_models(app, include_auto_created=True)
                 if router.allow_syncdb(db, m)])
             for app in models.get_apps()
         ]
